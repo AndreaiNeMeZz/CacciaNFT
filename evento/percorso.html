@@ -99,11 +99,12 @@
         }
 
         // Funzione per aggiornare lo stato di avanzamento
-        function aggiornaProgresso(nuovoProgresso) {
-            let progressoAttuale = parseInt(localStorage.getItem('progressoEmotiva') || 0);
-            if (nuovoProgresso > progressoAttuale) {
-                localStorage.setItem('progressoEmotiva', nuovoProgresso);
-            }
+        function aggiornaProgresso(tappaVisitata) {
+            const progressoAttuale = parseInt(localStorage.getItem('progressoEmotiva') || 0);
+            // Il nuovo progresso è il massimo tra quello attuale e la tappa appena visitata.
+            // Questo garantisce che il progresso non possa mai tornare indietro e risolve il bug.
+            const nuovoProgresso = Math.max(progressoAttuale, tappaVisitata);
+            localStorage.setItem('progressoEmotiva', nuovoProgresso);
         }
 
         // --- Funzioni per mostrare i contenuti (template HTML) ---
