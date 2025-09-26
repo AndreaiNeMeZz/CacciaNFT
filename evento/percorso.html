@@ -67,14 +67,13 @@
             let progresso = localStorage.getItem('progressoEmotiva') || 0;
             progresso = parseInt(progresso);
 
-            // Logica di sblocco sequenziale
+            // Logica di sblocco con identificativi unici e non sequenziali
             switch (tappaCorrente) {
-                case '1':
-                    // La prima tappa è sempre accessibile
+                case 'v1s1on3_4a2b': // ID UNIVOCO PER TAPPA 1
                     mostraTappa(container, percorso.tappa1.titolo, percorso.tappa1.indizio, percorso.tappa1.immagine);
                     aggiornaProgresso(1);
                     break;
-                case '2':
+                case 'c0ll4b_9f7d': // ID UNIVOCO PER TAPPA 2
                     if (progresso >= 1) {
                         mostraTappa(container, percorso.tappa2.titolo, percorso.tappa2.indizio, percorso.tappa2.immagine);
                         aggiornaProgresso(2);
@@ -82,7 +81,7 @@
                         mostraErrore(container, "Devi prima completare la Tappa 1 per sbloccare questa fase.");
                     }
                     break;
-                case '3':
+                case 'cr34t1v1ty_e5c8': // ID UNIVOCO PER TAPPA 3
                     if (progresso >= 2) {
                         mostraFinale(container, percorso.tappa3.titolo, percorso.tappa3.messaggioFinale, percorso.tappa3.immagine);
                         aggiornaProgresso(3);
@@ -158,3 +157,4 @@
     </script>
 </body>
 </html>
+
