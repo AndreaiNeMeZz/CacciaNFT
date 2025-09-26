@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Percorso Emotiva.</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+        }
+        .fade-in {
+            animation: fadeIn 1s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 1rem;
+            padding: 2.5rem;
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            border: 1px solid #e5e7eb;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <!-- Il contenitore principale dove l'applicazione mostrerà i contenuti dinamicamente -->
+    <div id="app-container" class="w-full max-w-md mx-auto">
+        <!-- Il contenuto verrà inserito qui dal JavaScript -->
+    </div>
+
+    <script>
+        // --- CONFIGURAZIONE DEL PERCORSO ---
+        const percorso = {
+            tappa1: {
+                titolo: "VISIONE",
+                indizio: "La nostra seconda tappa celebra l'unione di talenti. Cercala dove le idee si mescolano e prendono forma.",
+                immagine: "https://placehold.co/400x200/000000/FFFFFF?text=VISIONE"
+            },
+            tappa2: {
+                titolo: "COLLABORAZIONE",
+                indizio: "L'ultimo valore è l'anima del nostro lavoro. Trovalo dove la scintilla dell'ingegno diventa realtà.",
+                immagine: "https://placehold.co/400x200/34D399/FFFFFF?text=COLLABORAZIONE"
+            },
+            tappa3: {
+                titolo: "CREATIVITÀ",
+                messaggioFinale: "Hai completato il Percorso Emotiva! Mostra questa schermata al nostro staff per ritirare il tuo riconoscimento.",
+                immagine: "https://placehold.co/400x200/F59E0B/FFFFFF?text=CREATIVIT%C3%80"
+            }
+        };
+        // --- FINE CONFIGURAZIONE ---
+
+
+        // Funzione principale che gestisce la logica all'avvio
+        function avviaPercorso() {
+            const container = document.getElementById('app-container');
+            const params = new URLSearchParams(window.location.search);
+            const tappaCorrente = params.get('tappa');
+
+            // Recupera lo stato di avanzamento dalla memoria del browser
+            let progresso = localStorage.getItem('progressoEmotiva') || 0;
+            progresso = parseInt(progresso);
+
+            // Logica di sblocco sequenziale
+            switch (tappaCorrente) {
+                case '1':
+                    // La prima tappa è sempre accessibile
+                    mostraTappa(container, percorso.tappa1.titolo, percorso.tappa1.indizio, percorso.tappa1.immagine);
+                    aggiornaProgresso(1);
+                    break;
+                case '2':
+                    if (progresso >= 1) {
+                        mostraTappa(container, percorso.tappa2.titolo, percorso.tappa2.indizio, percorso.tappa2.immagine);
+                        aggiornaProgresso(2);
+                    } else {
+                        mostraErrore(container, "Devi prima completare la Tappa 1 per sbloccare questa fase.");
+                    }
+                    break;
+                case '3':
+                    if (progresso >= 2) {
+                        mostraFinale(container, percorso.tappa3.titolo, percorso.tappa3.messaggioFinale, percorso.tappa3.immagine);
+                        aggiornaProgresso(3);
+                    } else {
+                        mostraErrore(container, "Completa la Tappa 2 per scoprire l'ultimo valore.");
+                    }
+                    break;
+                default:
+                    // Se si accede alla pagina senza un parametro corretto
+                    mostraBenvenuto(container);
+                    // Opzionale: puoi resettare il percorso per i test
+                    // localStorage.removeItem('progressoEmotiva');
+            }
+        }
+
+        // Funzione per aggiornare lo stato di avanzamento
+        function aggiornaProgresso(nuovoProgresso) {
+            let progressoAttuale = parseInt(localStorage.getItem('progressoEmotiva') || 0);
+            if (nuovoProgresso > progressoAttuale) {
+                localStorage.setItem('progressoEmotiva', nuovoProgresso);
+            }
+        }
+
+        // --- Funzioni per mostrare i contenuti (template HTML) ---
+
+        function mostraTappa(container, titolo, indizio, immagine) {
+            container.innerHTML = `
+                <div class="card text-center fade-in">
+                    <p class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">HAI SBLOCCATO IL VALORE</p>
+                    <h1 class="text-5xl font-bold text-black mb-4">${titolo}</h1>
+                    <img src="${immagine}" alt="${titolo}" class="rounded-lg mb-6 mx-auto">
+                    <p class="text-gray-700 mb-1 font-semibold">Il tuo prossimo indizio:</p>
+                    <p class="text-gray-600 italic">"${indizio}"</p>
+                </div>
+            `;
+        }
+
+        function mostraFinale(container, titolo, messaggio, immagine) {
+            container.innerHTML = `
+                <div class="card text-center fade-in bg-green-500 text-white">
+                    <p class="text-sm font-semibold text-green-100 uppercase tracking-wider mb-2">CONGRATULAZIONI!</p>
+                    <h1 class="text-5xl font-bold text-white mb-4">${titolo}</h1>
+                    <img src="${immagine}" alt="${titolo}" class="rounded-lg mb-6 mx-auto">
+                    <p class="text-lg font-semibold">${messaggio}</p>
+                </div>
+            `;
+        }
+
+        function mostraErrore(container, messaggio) {
+            container.innerHTML = `
+                <div class="card text-center fade-in bg-red-500 text-white">
+                    <h2 class="text-2xl font-bold mb-4">Percorso Bloccato</h2>
+                    <p class="text-lg">${messaggio}</p>
+                    <p class="mt-4 text-sm text-red-100">Torna alla tappa precedente e completa la sfida per poter proseguire.</p>
+                </div>
+            `;
+        }
+        
+        function mostraBenvenuto(container) {
+             container.innerHTML = `
+                <div class="card text-center fade-in">
+                    <h1 class="text-3xl font-bold text-black mb-2">Emotiva.</h1>
+                    <h2 class="text-xl font-semibold text-gray-700 mb-4">Benvenuto nel Percorso Emotiva</h2>
+                    <p class="text-gray-600">Inizia la tua esplorazione scansionando il primo QR Code che ti è stato fornito all'ingresso.</p>
+                </div>
+            `;
+        }
+
+        // Avvia l'applicazione quando la pagina è caricata
+        document.addEventListener('DOMContentLoaded', avviaPercorso);
+
+    </script>
+</body>
+</html>
