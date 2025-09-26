@@ -58,21 +58,21 @@
         const percorso = {
             tappa1: {
                 id: 'v1s1on3_4a2b',
-                codice: 'PENSIERO', // Codice segreto da visualizzare vicino al QR Code 1
+                codice: 'FUTURO',
                 titolo: "VISIONE",
                 indizio: "La nostra seconda tappa celebra l'unione di talenti. Cercala dove le <strong>idee</strong> si mescolano e prendono forma.",
                 immagine: "https://placehold.co/400x200/000000/FFFFFF?text=VISIONE"
             },
             tappa2: {
                 id: 'c0ll4b_9f7d',
-                codice: 'IDEE', // Codice segreto da visualizzare vicino al QR Code 2
+                codice: 'IDEE',
                 titolo: "COLLABORAZIONE",
-                indizio: "L'ultimo valore è l'anima del <strong>nostro</strong> lavoro. Trovalo dove la scintilla dell'ingegno diventa realtà.",
+                indizio: "L'ultimo valore è l'anima del nostro lavoro. Trovalo dove la <strong>scintilla</strong> dell'ingegno diventa realtà.",
                 immagine: "https://placehold.co/400x200/34D399/FFFFFF?text=COLLABORAZIONE"
             },
             tappa3: {
                 id: 'cr34t1v1ty_e5c8',
-                codice: 'NOSTRO', // Codice segreto da visualizzare vicino al QR Code 3
+                codice: 'SCINTILLA',
                 titolo: "CREATIVITÀ",
                 messaggioFinale: "Hai completato il Percorso Emotiva! Mostra questa schermata al nostro staff per ritirare il tuo riconoscimento.",
                 immagine: "https://placehold.co/400x200/F59E0B/FFFFFF?text=CREATIVIT%C3%80"
@@ -100,6 +100,10 @@
                     if (progresso < 2) mostraErrore("Devi prima completare la Tappa 2.");
                     else if (progresso < 3) mostraCodicePrompt(3);
                     else mostraTappa(3);
+                    break;
+                case 'reset_percorso_12345': // ID UNIVOCO PER IL RESET
+                    localStorage.removeItem('progressoEmotiva');
+                    mostraResetConfermato();
                     break;
                 default:
                     mostraBenvenuto();
@@ -145,13 +149,14 @@
                  mostraFinale();
             } else {
                  const tappa = percorso[`tappa${numeroTappa}`];
+                 const indizioProssimaTappa = percorso[`tappa${numeroTappa + 1}`].indizio;
                  container.innerHTML = `
                     <div class="card text-center fade-in">
                         <p class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">HAI SBLOCCATO IL VALORE</p>
                         <h1 class="text-5xl font-bold text-black mb-4">${tappa.titolo}</h1>
                         <img src="${tappa.immagine}" alt="${tappa.titolo}" class="rounded-lg mb-6 mx-auto">
                         <p class="text-gray-700 mb-1 font-semibold">Il tuo prossimo indizio:</p>
-                        <p class="text-gray-600 italic">"${percorso[`tappa${numeroTappa+1}` === 'tappa2' ? 'tappa1' : `tappa${numeroTappa}`].indizio}"</p>
+                        <p class="text-gray-600 italic">"${tappa.indizio}"</p>
                     </div>
                  `;
             }
@@ -184,7 +189,16 @@
                 <div class="card text-center fade-in">
                     <h1 class="text-3xl font-bold text-black mb-2">Emotiva.</h1>
                     <h2 class="text-xl font-semibold text-gray-700 mb-4">Benvenuto nel Percorso Emotiva</h2>
-                    <p class="text-gray-600">Inizia la tua esplorazione scansionando il QR Code. <br> "Il nostro stand è il <strong>pensiero</strong> che prende forma.</p>
+                    <p class="text-gray-600">Il nostro viaggio inizia dove la luce incontra l'ispirazione. Cerca il nostro primo valore, dove il <strong>futuro</strong> mette radici.</p>
+                </div>
+            `;
+        }
+
+        function mostraResetConfermato() {
+             container.innerHTML = `
+                <div class="card text-center fade-in bg-blue-500 text-white">
+                    <h2 class="text-2xl font-bold mb-4">Percorso Resettato</h2>
+                    <p class="text-lg">La memoria dei tuoi progressi è stata cancellata. Ora puoi ricominciare il test dalla Tappa 1.</p>
                 </div>
             `;
         }
@@ -193,3 +207,4 @@
     </script>
 </body>
 </html>
+
